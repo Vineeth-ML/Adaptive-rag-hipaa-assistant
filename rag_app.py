@@ -19,9 +19,6 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langgraph.graph import END, StateGraph, START
 from pydantic import BaseModel, Field
 
-# -----------------------------------------------------------------------------
-# 1. SETUP & ENVIRONMENT
-# -----------------------------------------------------------------------------
 load_dotenv(dotenv_path="venv2/.env")
 
 os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY", "")
@@ -32,9 +29,6 @@ st.set_page_config(page_title="Adaptive RAG - HIPAA Cybersecurity", layout="wide
 st.title("🛡️ Adaptive RAG: HIPAA Cybersecurity Assistant")
 st.subheader("Leveraging LangGraph, FAISS, Groq, and Tavily Search")
 
-# -----------------------------------------------------------------------------
-# 2. FINANCIAL DATA — Top 20 Health Companies
-# -----------------------------------------------------------------------------
 HEALTH_TICKERS = {
     "UNH":  "UnitedHealth Group",
     "JNJ":  "Johnson & Johnson",
@@ -87,15 +81,12 @@ def fetch_health_companies():
     df["Employees"]  = df["Employees"].apply(lambda x: f"{x:,}" if isinstance(x, int) else x)
     return df
 
-# -----------------------------------------------------------------------------
-# 3. CACHED VECTORSTORE & WORKFLOW INITIALIZATION
-# -----------------------------------------------------------------------------
 @st.cache_resource
 def initialize_rag_components():
     """Initializes the retriever, tools, models, and compiles the LangGraph."""
 
     if not os.environ.get("GROQ_API_KEY") or not os.environ.get("TAVILY_API_KEY"):
-        st.warning("⚠️ Environment keys missing. Please check your .env file.")
+        st.warning(" Environment keys missing. Please check your .env file.")
 
     # A. Load and Split Documents
     embd = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -244,9 +235,7 @@ Give a binary score 'yes' or 'no'."""),
 # Compile app
 app_engine = initialize_rag_components()
 
-# -----------------------------------------------------------------------------
-# 4. STREAMLIT UI — Tabs
-# -----------------------------------------------------------------------------
+# STREAMLIT UI — Tabs
 st.markdown("---")
 tab1, tab2 = st.tabs(["💬 HIPAA Assistant", "🏥 Top 20 Health Companies 2026"])
 
@@ -301,7 +290,7 @@ with tab1:
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 
-# ── Tab 2: Top 20 Health Companies ─────────────────────────────────────────
+#Tab 2: Top 20 Health Companies
 with tab2:
     st.markdown("#### 📊 Top 20 US Health Companies — Live Financial Data")
 
